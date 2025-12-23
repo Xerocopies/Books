@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аудиокниги Online</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <h1><i class="fas fa-book-open"></i> Аудиокниги</h1>
+                <div class="header-actions">
+                    <a href="upload.html" class="upload-link">
+                        <i class="fas fa-upload"></i> Загрузить книги
+                    </a>
+                    <button id="refreshBtn" class="refresh-btn">
+                        <i class="fas fa-sync-alt"></i> Обновить
+                    </button>
+                </div>
+            </div>
+            <p class="subtitle">Слушайте на телефоне, загружайте с компьютера</p>
+        </header>
+
+        <div class="player-wrapper">
+            <div class="player">
+                <div class="player-header">
+                    <h2 id="nowPlaying">Выберите книгу из списка</h2>
+                    <div class="player-info">
+                        <span id="currentBookInfo"></span>
+                    </div>
+                </div>
+                
+                <div class="audio-player">
+                    <div class="audio-controls">
+                        <div class="main-controls">
+                            <button id="prevBtn" class="control-btn" title="Предыдущая">
+                                <i class="fas fa-step-backward"></i>
+                            </button>
+                            <button id="playBtn" class="control-btn play-btn" title="Воспроизвести">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button id="nextBtn" class="control-btn" title="Следующая">
+                                <i class="fas fa-step-forward"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="secondary-controls">
+                            <button id="rewindBack" class="control-btn small" title="Назад 10 сек">
+                                <i class="fas fa-backward"></i> 10
+                            </button>
+                            <button id="rewindForward" class="control-btn small" title="Вперед 10 сек">
+                                10 <i class="fas fa-forward"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <span id="currentTime" class="time">0:00</span>
+                        <div class="progress-bar">
+                            <div class="progress" id="progress"></div>
+                            <input type="range" id="progressSlider" class="slider" min="0" max="100" value="0">
+                        </div>
+                        <span id="duration" class="time">0:00</span>
+                    </div>
+                    
+                    <div class="additional-controls">
+                        <div class="volume-control">
+                            <i class="fas fa-volume-up" id="volumeIcon"></i>
+                            <input type="range" id="volumeSlider" class="slider" min="0" max="100" value="70">
+                        </div>
+                        
+                        <div class="speed-control">
+                            <span>Скорость:</span>
+                            <select id="speedSelect">
+                                <option value="0.5">0.5x</option>
+                                <option value="0.75">0.75x</option>
+                                <option value="1" selected>1x</option>
+                                <option value="1.25">1.25x</option>
+                                <option value="1.5">1.5x</option>
+                                <option value="2">2x</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <audio id="audioPlayer" preload="metadata" crossorigin="anonymous"></audio>
+                </div>
+                
+                <div class="bookmark-section">
+                    <button id="addBookmarkBtn" class="bookmark-btn">
+                        <i class="far fa-bookmark"></i> Добавить закладку
+                    </button>
+                    <div id="bookmarksList" class="bookmarks-list"></div>
+                </div>
+            </div>
+
+            <div class="library">
+                <div class="library-header">
+                    <h3><i class="fas fa-list"></i> Библиотека книг</h3>
+                    <span class="book-count" id="bookCount">0 книг</span>
+                </div>
+                
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Поиск книги...">
+                </div>
+                
+                <div class="book-list" id="bookList">
+                    <div class="empty-state">
+                        <i class="fas fa-headphones"></i>
+                        <p>Загрузите книги с компьютера</p>
+                        <a href="upload.html" class="btn-primary">
+                            <i class="fas fa-upload"></i> Загрузить книги
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="library-stats">
+                    <div class="stat">
+                        <i class="fas fa-clock"></i>
+                        <span>Общее время: <span id="totalDuration">0:00</span></span>
+                    </div>
+                    <div class="stat">
+                        <i class="fas fa-database"></i>
+                        <span>Всего книг: <span id="totalBooks">0</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3><i class="fas fa-info-circle"></i> Как использовать:</h3>
+            <ol>
+                <li>На компьютере откройте <a href="upload.html">страницу загрузки</a></li>
+                <li>Загрузите MP3 файлы книг</li>
+                <li>На телефоне откройте этот сайт и слушайте!</li>
+            </ol>
+        </div>
+        
+        <footer>
+            <p>Аудиокниги Online &copy; 2024 | 
+                <a href="https://github.com/ваш-логин/audiobooks" target="_blank">
+                    <i class="fab fa-github"></i> GitHub
+                </a> |
+                <a href="#" id="installBtn">
+                    <i class="fas fa-download"></i> Установить как приложение
+                </a>
+            </p>
+        </footer>
+    </div>
+
+    <div class="modal" id="bookmarkModal">
+        <div class="modal-content">
+            <h3>Добавить закладку</h3>
+            <input type="text" id="bookmarkName" placeholder="Название закладки">
+            <div class="modal-actions">
+                <button id="saveBookmarkBtn" class="btn-primary">Сохранить</button>
+                <button id="cancelBookmarkBtn" class="btn-secondary">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // PWA установка
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+        
+        let deferredPrompt;
+        const installBtn = document.getElementById('installBtn');
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'block';
+        });
+        
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                installBtn.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

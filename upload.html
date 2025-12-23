@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Загрузка книг - Аудиокниги</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .upload-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            border: 2px solid #4cc9f0;
+        }
+        
+        .upload-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4cc9f0;
+        }
+        
+        .upload-box {
+            border: 3px dashed #4cc9f0;
+            border-radius: 15px;
+            padding: 60px 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(76, 201, 240, 0.05);
+        }
+        
+        .upload-box:hover {
+            background: rgba(76, 201, 240, 0.1);
+        }
+        
+        .upload-box i {
+            font-size: 80px;
+            color: #4cc9f0;
+            margin-bottom: 20px;
+        }
+        
+        #fileInput {
+            display: none;
+        }
+        
+        .file-list {
+            margin-top: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #4cc9f0;
+        }
+        
+        .file-icon {
+            font-size: 24px;
+            color: #4cc9f0;
+            margin-right: 15px;
+        }
+        
+        .file-info {
+            flex: 1;
+        }
+        
+        .file-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .file-size {
+            color: #888;
+            font-size: 14px;
+        }
+        
+        .upload-progress {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: #4cc9f0;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .upload-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #4cc9f0;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #3ab4d9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #4cc9f0;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="upload-container">
+            <h1 class="upload-title">
+                <i class="fas fa-cloud-upload-alt"></i><br>
+                Загрузка аудиокниг
+            </h1>
+            
+            <p style="text-align: center; margin-bottom: 30px; color: #aaa;">
+                Используйте эту страницу ТОЛЬКО на компьютере<br>
+                Загруженные книги будут доступны на телефоне
+            </p>
+            
+            <div class="upload-box" id="dropArea">
+                <i class="fas fa-file-audio"></i>
+                <h3>Перетащите MP3 файлы сюда</h3>
+                <p>или нажмите для выбора файлов</p>
+                <input type="file" id="fileInput" accept="audio/mp3,audio/*" multiple>
+            </div>
+            
+            <div class="file-list" id="fileList">
+                <!-- Список файлов будет здесь -->
+            </div>
+            
+            <div class="upload-progress" id="uploadProgress">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            
+            <div class="upload-actions">
+                <button id="uploadBtn" class="btn btn-primary" disabled>
+                    <i class="fas fa-upload"></i> Загрузить на сервер
+                </button>
+                <button id="clearBtn" class="btn btn-secondary">
+                    <i class="fas fa-trash"></i> Очистить список
+                </button>
+            </div>
+            
+            <div id="uploadStatus" style="text-align: center; margin-top: 20px; min-height: 40px;"></div>
+            
+            <a href="index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i> Вернуться к плееру
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Загрузка файлов через GitHub API
+        const dropArea = document.getElementById('dropArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const uploadProgress = document.getElementById('uploadProgress');
+        const progressBar = document.getElementById('progressBar');
+        const uploadStatus = document.getElementById('uploadStatus');
+        
+        let filesToUpload = [];
+        
+        // Drag & Drop
+        dropArea.addEventListener('click', () => fileInput.click());
+        
+        dropArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropArea.style.borderColor = '#3ab4d9';
+            dropArea.style.background = 'rgba(76, 201, 240, 0.1)';
+        });
+        
+        dropArea.addEventListener('dragleave', () => {
+            dropArea.style.borderColor = '#4cc9f0';
+            dropArea.style.background = 'rgba(76, 201, 240, 0.05)';
+        });
+        
+        dropArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropArea.style.borderColor = '#4cc9f0';
+            dropArea.style.background = 'rgba(76, 201, 240, 0.05)';
+            handleFiles(e.dataTransfer.files);
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+        
+        function handleFiles(fileList) {
+            for (let file of fileList) {
+                // Проверяем тип файла
+                if (!file.type.startsWith('audio/')) {
+                    alert(`Файл "${file.name}" не является аудиофайлом. Пропускаем.`);
+                    continue;
+                }
+                
+                // Проверяем дубликаты
+                if (filesToUpload.some(f => f.name === file.name && f.size === file.size)) {
+                    console.log(`Файл "${file.name}" уже добавлен.`);
+                    continue;
+                }
+                
+                filesToUpload.push(file);
+            }
+            
+            renderFileList();
+            updateUploadButton();
+        }
+        
+        function renderFileList() {
+            if (filesToUpload.length === 0) {
+                fileList.innerHTML = '<p style="text-align: center; color: #888;">Нет выбранных файлов</p>';
+                return;
+            }
+            
+            fileList.innerHTML = '';
+            filesToUpload.forEach((file, index) => {
+                const div = document.createElement('div');
+                div.className = 'file-item';
+                div.innerHTML = `
+                    <div class="file-icon">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${formatFileSize(file.size)}</div>
+                    </div>
+                    <button class="remove-file" data-index="${index}">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                fileList.appendChild(div);
+            });
+            
+            // Добавляем обработчики удаления
+            document.querySelectorAll('.remove-file').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = parseInt(e.target.closest('.remove-file').dataset.index);
+                    filesToUpload.splice(index, 1);
+                    renderFileList();
+                    updateUploadButton();
+                });
+            });
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        function updateUploadButton() {
+            uploadBtn.disabled = filesToUpload.length === 0;
+        }
+        
+        clearBtn.addEventListener('click', () => {
+            filesToUpload = [];
+            renderFileList();
+            updateUploadButton();
+        });
+        
+        // ВАЖНО: GitHub Pages - статический хостинг, не поддерживает загрузку файлов напрямую
+        // Решение 1: Использовать отдельный сервис для хранения файлов
+        // Решение 2: Делать форк репозитория и пушить файлы через Git
+        
+        uploadBtn.addEventListener('click', async () => {
+            if (filesToUpload.length === 0) return;
+            
+            uploadStatus.innerHTML = `
+                <div style="color: #ffa500;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Внимание!</strong> GitHub Pages не поддерживает загрузку файлов напрямую.
+                </div>
+                <p style="margin-top: 10px;">
+                    Используйте один из способов:
+                </p>
+                <ol style="text-align: left; margin: 15px 0;">
+                    <li>Скопируйте MP3 файлы в папку <code>books/</code> репозитория</li>
+                    <li>Используйте Git команды для загрузки</li>
+                    <li>Или используйте Google Drive/Dropbox для хранения файлов</li>
+                </ol>
+            `;
+            
+            // Альтернатива: Сохранение в localStorage браузера (для личного использования)
+            const useLocalStorage = confirm(
+                'GitHub Pages не поддерживает загрузку файлов на сервер.\n\n' +
+                'Хотите сохранить книги в памяти вашего браузера? ' +
+                '(Они будут доступны только на этом компьютере)'
+            );
+            
+            if (useLocalStorage) {
+                uploadToLocalStorage();
+            }
+        });
+        
+        async function uploadToLocalStorage() {
+            uploadProgress.style.display = 'block';
+            let uploadedCount = 0;
+            
+            for (let i = 0; i < filesToUpload.length; i++) {
+                const file = filesToUpload[i];
+                
+                try {
+                    // Читаем файл как Data URL
+                    const reader = new FileReader();
+                    
+                    await new Promise((resolve, reject) => {
+                        reader.onload = function(e) {
+                            // Сохраняем в localStorage
+                            const bookData = {
+                                name: file.name.replace(/\.[^/.]+$/, ""),
+                                dataUrl: e.target.result,
+                                size: file.size,
+                                type: file.type,
+                                lastModified: file.lastModified
+                            };
+                            
+                            // Получаем существующие книги
+                            let books = JSON.parse(localStorage.getItem('audiobooks') || '[]');
+                            books.push(bookData);
+                            localStorage.setItem('audiobooks', JSON.stringify(books));
+                            
+                            resolve();
+                        };
+                        
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    });
+                    
+                    uploadedCount++;
+                    const progress = Math.round((uploadedCount / filesToUpload.length) * 100);
+                    progressBar.style.width = `${progress}%`;
+                    
+                    uploadStatus.innerHTML = `
+                        <div style="color: #4cc9f0;">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            Загружено ${uploadedCount} из ${filesToUpload.length} файлов...
+                        </div>
+                    `;
+                    
+                } catch (error) {
+                    console.error('Ошибка загрузки файла:', error);
+                    uploadStatus.innerHTML += `
+                        <div style="color: #ff4444;">
+                            <i class="fas fa-times-circle"></i>
+                            Ошибка загрузки "${file.name}"
+                        </div>
+                    `;
+                }
+            }
+            
+            uploadStatus.innerHTML = `
+                <div style="color: #4CAF50;">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Готово!</strong> Загружено ${uploadedCount} книг в память браузера.
+                </div>
+                <p style="margin-top: 10px;">
+                    Теперь откройте <a href="index.html" style="color: #4cc9f0;">главную страницу</a> 
+                    на телефоне (с того же браузера, если синхронизация включена)
+                </p>
+            `;
+            
+            filesToUpload = [];
+            renderFileList();
+            updateUploadButton();
+            progressBar.style.width = '0%';
+            uploadProgress.style.display = 'none';
+        }
+        
+        // Проверяем, на телефоне ли мы
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        
+        if (isMobile()) {
+            document.body.innerHTML = `
+                <div style="text-align: center; padding: 50px 20px;">
+                    <i class="fas fa-mobile-alt" style="font-size: 60px; color: #4cc9f0; margin-bottom: 20px;"></i>
+                    <h2>Эта страница только для компьютера</h2>
+                    <p style="margin: 20px 0; color: #aaa;">
+                        Используйте эту страницу на компьютере для загрузки книг.<br>
+                        На телефоне используйте <a href="index.html" style="color: #4cc9f0;">главную страницу</a> для прослушивания.
+                    </p>
+                    <a href="index.html" style="display: inline-block; padding: 12px 30px; background: #4cc9f0; color: white; text-decoration: none; border-radius: 10px; margin-top: 20px;">
+                        Перейти к плееру
+                    </a>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

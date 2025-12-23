@@ -1,0 +1,384 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #f1f1f1;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Шапка */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #4cc9f0;
+    text-shadow: 0 0 10px rgba(76, 201, 240, 0.5);
+}
+
+header h1 i {
+    margin-right: 15px;
+}
+
+/* Область загрузки */
+.upload-area {
+    position: relative;
+    padding: 40px;
+    border: 3px dashed #4cc9f0;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: rgba(76, 201, 240, 0.05);
+    margin: 0 auto;
+    max-width: 600px;
+}
+
+.upload-area:hover {
+    background: rgba(76, 201, 240, 0.1);
+    transform: translateY(-5px);
+}
+
+.upload-area i {
+    font-size: 60px;
+    color: #4cc9f0;
+    margin-bottom: 20px;
+    opacity: 0.8;
+}
+
+.upload-area p {
+    font-size: 1.2rem;
+    color: #b0b0b0;
+}
+
+#fileInput {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Основной контейнер */
+.player-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+@media (min-width: 992px) {
+    .player-wrapper {
+        flex-direction: row;
+    }
+    
+    .player {
+        flex: 2;
+    }
+    
+    .library {
+        flex: 1;
+    }
+}
+
+/* Плеер */
+.player {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 25px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.player-header {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #4cc9f0;
+}
+
+.player-header h2 {
+    font-size: 1.8rem;
+    color: #fff;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Стандартный аудиоплеер */
+audio {
+    width: 100%;
+    margin-bottom: 20px;
+    border-radius: 10px;
+}
+
+/* Кастомные контролы */
+.custom-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.control-btn {
+    background: #4cc9f0;
+    border: none;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(76, 201, 240, 0.4);
+}
+
+.control-btn:hover {
+    background: #3ab4d9;
+    transform: scale(1.1);
+}
+
+.control-btn:active {
+    transform: scale(0.95);
+}
+
+/* Прогресс бар */
+.progress-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.progress-bar {
+    flex: 1;
+    position: relative;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress {
+    position: absolute;
+    height: 100%;
+    background: #4cc9f0;
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.1s;
+}
+
+#progressSlider {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+/* Слайдеры */
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4cc9f0;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(76, 201, 240, 0.8);
+}
+
+.slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #4cc9f0;
+    cursor: pointer;
+    border: none;
+}
+
+/* Громкость и скорость */
+.volume-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.volume-container i {
+    color: #4cc9f0;
+    font-size: 1.2rem;
+}
+
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+.speed-control select {
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: 1px solid #4cc9f0;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    outline: none;
+}
+
+/* Библиотека */
+.library {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    padding: 25px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.library h3 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: #4cc9f0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #4cc9f0;
+}
+
+.library h3 i {
+    margin-right: 10px;
+}
+
+.book-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.book-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border-left: 4px solid transparent;
+}
+
+.book-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.book-item.active {
+    background: rgba(76, 201, 240, 0.2);
+    border-left-color: #4cc9f0;
+}
+
+.book-icon {
+    font-size: 2rem;
+    color: #4cc9f0;
+    margin-right: 15px;
+    min-width: 40px;
+}
+
+.book-info {
+    flex: 1;
+    overflow: hidden;
+}
+
+.book-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: white;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.book-duration {
+    font-size: 0.9rem;
+    color: #b0b0b0;
+}
+
+.empty-library {
+    text-align: center;
+    padding: 40px 20px;
+    color: #888;
+}
+
+.empty-library i {
+    font-size: 60px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+/* Футер */
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #888;
+    font-size: 0.9rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 20px;
+}
+
+/* Полоса прокрутки */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4cc9f0;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #3ab4d9;
+}

@@ -1,0 +1,21 @@
+{
+    "lastUpdated": "2024-01-15T10:30:00Z",
+    "books": [
+        {
+            "id": "book1",
+            "title": "Война и мир",
+            "author": "Лев Толстой",
+            "file": "voyna-i-mir.mp3",
+            "duration": 86400,
+            "size": 150000000
+        },
+        {
+            "id": "book2",
+            "title": "Мастер и Маргарита",
+            "author": "Михаил Булгаков",
+            "file": "master-i-margarita.mp3",
+            "duration": 28800,
+            "size": 50000000
+        }
+    ]
+}
